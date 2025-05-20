@@ -11,12 +11,14 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
     <style>
         :root {
-            --neon-blue: #00f3ff;
-            --neon-purple: #bd00ff;
-            --neon-green: #00ff66;
+            --neon-blue: #0077ff;
+            --neon-purple: #9900ff;
+            --neon-green: #00cc88;
             --dark-bg: #0a0a1a;
             --darker-bg: #050510;
-            --card-bg: rgba(20, 20, 40, 0.7);
+            --card-bg: rgba(20, 20, 40, 0.85);
+            --classic-gold: #d4af37;
+            --classic-silver: #c0c0c0;
         }
 
         * {
@@ -31,8 +33,12 @@
         body {
             background-color: var(--dark-bg);
             background-image:
-                radial-gradient(circle at 20% 30%, rgba(0, 243, 255, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(189, 0, 255, 0.05) 0%, transparent 40%);
+                linear-gradient(135deg, rgba(0, 119, 255, 0.05) 0%, transparent 50%),
+                linear-gradient(225deg, rgba(153, 0, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 20% 30%, rgba(0, 119, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(153, 0, 255, 0.08) 0%, transparent 40%),
+                repeating-linear-gradient(90deg, rgba(212, 175, 55, 0.02) 0px, rgba(212, 175, 55, 0.02) 1px, transparent 1px, transparent 60px),
+                repeating-linear-gradient(0deg, rgba(212, 175, 55, 0.02) 0px, rgba(212, 175, 55, 0.02) 1px, transparent 1px, transparent 60px);
             color: white;
             font-family: 'Rajdhani', sans-serif;
             line-height: 1.6;
@@ -95,22 +101,45 @@
             border-radius: 10px;
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            position: relative;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 48%, var(--classic-silver) 49%, var(--classic-silver) 51%, transparent 52%);
+            background-size: 10px 10px;
+            opacity: 0.05;
+            pointer-events: none;
         }
 
         .card:hover {
             transform: translateY(-5px);
+            border: 1px solid var(--classic-gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
         }
 
         .card-blue:hover {
-            box-shadow: 0 0 15px var(--neon-blue);
+            box-shadow: 0 0 15px var(--neon-blue), 0 0 30px rgba(0, 119, 255, 0.3), 0 0 10px rgba(212, 175, 55, 0.5);
+            border-color: var(--classic-gold);
+            background: linear-gradient(135deg, rgba(0, 119, 255, 0.1), rgba(212, 175, 55, 0.1));
         }
 
         .card-purple:hover {
-            box-shadow: 0 0 15px var(--neon-purple);
+            box-shadow: 0 0 15px var(--neon-purple), 0 0 30px rgba(153, 0, 255, 0.3), 0 0 10px rgba(212, 175, 55, 0.5);
+            border-color: var(--classic-gold);
+            background: linear-gradient(135deg, rgba(153, 0, 255, 0.1), rgba(212, 175, 55, 0.1));
         }
 
         .card-green:hover {
-            box-shadow: 0 0 15px var(--neon-green);
+            box-shadow: 0 0 15px var(--neon-green), 0 0 30px rgba(0, 204, 136, 0.3), 0 0 10px rgba(212, 175, 55, 0.5);
+            border-color: var(--classic-gold);
+            background: linear-gradient(135deg, rgba(0, 204, 136, 0.1), rgba(212, 175, 55, 0.1));
         }
 
         .btn {
@@ -224,28 +253,82 @@
             width: 100%;
             height: 100%;
             background-image:
-                linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
-            background-size: 50px 50px;
+                linear-gradient(rgba(0, 119, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 119, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(212, 175, 55, 0.02) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(212, 175, 55, 0.02) 2px, transparent 2px);
+            background-size: 20px 20px, 20px 20px, 100px 100px, 100px 100px;
             pointer-events: none;
             z-index: -1;
+        }
+        
+        /* Classic gold accent line */
+        .classic-accent {
+            position: relative;
+        }
+        
+        .classic-accent::after {
+            content: '';
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--classic-gold), transparent);
+            width: 100%;
+            bottom: -10px;
+            left: 0;
         }
 
         .section-heading {
             position: relative;
             display: inline-block;
             padding-bottom: 10px;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
             margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+        
+        .section-heading::before,
+        .section-heading::after {
+            content: "{ ";
+            font-family: 'Orbitron', sans-serif;
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: var(--classic-gold);
+            font-weight: bold;
+            font-size: 1.5rem;
+            text-shadow: 0 0 5px rgba(212, 175, 55, 0.7);
+        }
+        
+        .section-heading::after {
+            content: " }";
+            left: auto;
+            right: 0;
         }
 
-        .section-heading::after {
-            content: "";
+        /* Removed duplicate selectors */
+        
+        .section-heading .heading-underline {
             position: absolute;
             left: 0;
             bottom: 0;
             width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-green));
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--classic-gold) 20%, 
+                var(--classic-silver) 40%, 
+                var(--classic-gold) 60%, 
+                var(--classic-silver) 80%, 
+                transparent 100%);
+            background-size: 200% 100%;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            animation: shimmer 3s infinite linear;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
         }
 
         .tech-badge {
@@ -420,6 +503,7 @@
             width: 100%;
             height: 400px;
             perspective: 1000px;
+            z-index: 10;
         }
 
         #avatar-canvas {
@@ -428,6 +512,22 @@
             left: 0;
             width: 100%;
             height: 100%;
+        }
+        
+        /* Ensure avatar doesn't overlap with text */
+        .avatar-section {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .text-section {
+            position: relative;
+            z-index: 2;
+            background: rgba(10, 10, 26, 0.7);
+            backdrop-filter: blur(5px);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.1);
         }
 
         /* Custom cursor styles */
@@ -468,15 +568,20 @@
         /* 3D Avatar Styles */
         .avatar-3d {
             position: relative;
-            width: 100%;
-            height: 100%;
+            width: 90%;
+            height: 90%;
+            margin: 5% auto;
             transform-style: preserve-3d;
-            animation: avatarRotate 20s infinite linear;
+            animation: avatarRotate 40s infinite ease-in-out;
+            transform: scale(0.75); /* Smaller to prevent overlap */
         }
 
         @keyframes avatarRotate {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
+            0% { transform: scale(0.75) rotateY(0deg) rotateX(5deg); }
+            25% { transform: scale(0.75) rotateY(90deg) rotateX(3deg); }
+            50% { transform: scale(0.75) rotateY(180deg) rotateX(5deg); }
+            75% { transform: scale(0.75) rotateY(270deg) rotateX(3deg); }
+            100% { transform: scale(0.75) rotateY(360deg) rotateX(5deg); }
         }
 
         .avatar-face {
@@ -734,7 +839,6 @@
                     <a href="#education" class="orbitron text-lg font-bold neon-text-green hover:scale-110 transition-transform duration-300 px-4 py-2 rounded-lg" style="box-shadow: 0 0 10px var(--neon-green), inset 0 0 5px var(--neon-green); border: 1px solid var(--neon-green);">EDUCATION</a>
                     <a href="#projects" class="orbitron text-lg font-bold neon-text-blue hover:scale-110 transition-transform duration-300 px-4 py-2 rounded-lg" style="box-shadow: 0 0 10px var(--neon-blue), inset 0 0 5px var(--neon-blue); border: 1px solid var(--neon-blue);">PROJECTS</a>
                     <a href="#contact" class="orbitron text-lg font-bold neon-text-purple hover:scale-110 transition-transform duration-300 px-4 py-2 rounded-lg" style="box-shadow: 0 0 10px var(--neon-purple), inset 0 0 5px var(--neon-purple); border: 1px solid var(--neon-purple);">CONTACT</a>
-                    <a href="book-session.html" class="orbitron text-lg font-bold neon-text-green hover:scale-110 transition-transform duration-300 px-4 py-2 rounded-lg" style="box-shadow: 0 0 10px var(--neon-green), inset 0 0 5px var(--neon-green); border: 1px solid var(--neon-green);">BOOK SESSION</a>
                 </div>
 
                 <!-- Mobile Navigation -->
@@ -753,7 +857,7 @@
                     <li><a href="#education" class="orbitron font-bold neon-text-green">EDUCATION</a></li>
                     <li><a href="#projects" class="orbitron font-bold neon-text-blue">PROJECTS</a></li>
                     <li><a href="#contact" class="orbitron font-bold neon-text-purple">CONTACT</a></li>
-                    <li><a href="book-session.html" class="orbitron font-bold neon-text-green">BOOK SESSION</a></li>
+
                 </ul>
             </div>
         </div>
@@ -821,9 +925,9 @@
     <!-- About Section -->
     <section id="about" class="section reveal">
         <div class="container mx-auto px-6">
-            <h2 class="orbitron text-3xl font-bold section-heading neon-text-blue">About Me</h2>
+            <h2 class="orbitron text-3xl font-bold section-heading neon-text-blue">About Me<span class="heading-underline"></span></h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="md:col-span-2">
+                <div class="md:col-span-2" style="position: relative; z-index: 20; background: rgba(10, 10, 26, 0.7); backdrop-filter: blur(5px); padding: 20px; border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.3);">
                     <p class="text-gray-300 mb-6">
                         As a Machine Learning & Artificial Intelligence Developer with over 6 months of hands-on experience, I specialize in developing, deploying, and maintaining automation solutions. My expertise lies in integrating solutions across cloud platforms and optimizing models for scalability.
                     </p>
@@ -864,7 +968,7 @@
                             <a href="https://linkedin.com/in/" target="_blank" class="social-icon social-icon-blue">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
-                            <a href="https://github.com/" target="_blank" class="social-icon social-icon-purple">
+                            <a href="https://github.com/Abhijeet-077" target="_blank" class="social-icon social-icon-purple" title="GitHub Profile">
                                 <i class="fab fa-github"></i>
                             </a>
                             <a href="#" class="social-icon social-icon-green">
@@ -880,7 +984,7 @@
     <!-- Skills Section -->
     <section id="skills" class="section bg-opacity-30 reveal" style="background-color: rgba(20, 20, 40, 0.3);">
         <div class="container mx-auto px-6">
-            <h2 class="orbitron text-3xl font-bold section-heading neon-text-purple">Technical Skills</h2>
+            <h2 class="orbitron text-3xl font-bold section-heading neon-text-purple">Technical Skills<span class="heading-underline"></span></h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
                     <h3 class="text-xl font-semibold mb-6">Programming & Frameworks</h3>
@@ -1000,7 +1104,7 @@
     <!-- Education Section -->
     <section id="education" class="section reveal">
         <div class="container mx-auto px-6">
-            <h2 class="orbitron text-3xl font-bold section-heading neon-text-green">Education</h2>
+            <h2 class="orbitron text-3xl font-bold section-heading neon-text-green">Education<span class="heading-underline"></span></h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="card neon-border neon-border-green p-6">
                     <div class="flex items-start">
@@ -1085,7 +1189,7 @@
     <!-- Projects Section -->
     <section id="projects" class="section bg-opacity-30 reveal" style="background-color: rgba(20, 20, 40, 0.3);">
         <div class="container mx-auto px-6">
-            <h2 class="orbitron text-3xl font-bold section-heading neon-text-blue">Projects</h2>
+            <h2 class="orbitron text-3xl font-bold section-heading neon-text-blue">Projects<span class="heading-underline"></span></h2>
 
             <!-- AI Projects -->
             <div class="mb-12">
@@ -1109,7 +1213,7 @@
                                 <span class="tech-badge blue-badge">OpenCV</span>
                             </div>
                             <div class="flex justify-between">
-                                <a href="https://github.com/Abhijeet-077/AGRO-Z-MINE-2024" class="btn btn-blue">Github</a>
+                                <a href="https://github.com/Abhijeet-077/AGRO-Z-MINE-2024" target="_blank" class="btn btn-blue">Github <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
                             </div>
                         </div>
                     </div>
@@ -1132,7 +1236,7 @@
                                 <span class="tech-badge blue-badge">Pinecone</span>
                             </div>
                             <div class="flex justify-between">
-                                <a href="https://github.com/Abhijeet-077/Xagent-main" class="btn btn-blue">Github</a>
+                                <a href="https://github.com/Abhijeet-077/Xagent-main" target="_blank" class="btn btn-blue">Github <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
                             </div>
                         </div>
                     </div>
@@ -1155,7 +1259,7 @@
                                 <span class="tech-badge blue-badge">Knowledge Graphs</span>
                             </div>
                             <div class="flex justify-between">
-                                <a href="https://github.com/Abhijeet-077/L3AGI-main" class="btn btn-blue">Github</a>
+                                <a href="https://github.com/Abhijeet-077/L3AGI-main" target="_blank" class="btn btn-blue">Github <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
                             </div>
                         </div>
                     </div>
@@ -1184,7 +1288,7 @@
                                 <span class="tech-badge purple-badge">Isolation Forest</span>
                             </div>
                             <div class="flex justify-between">
-                                <a href="https://github.com/Abhijeet-077/Anomoly-Recognition-" class="btn btn-purple">Github</a>
+                                <a href="https://github.com/Abhijeet-077/Anomaly-Recognition" target="_blank" class="btn btn-purple">Github <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
                             </div>
                         </div>
                     </div>
@@ -1207,7 +1311,7 @@
                                 <span class="tech-badge purple-badge">Numpy</span>
                             </div>
                             <div class="flex justify-between">
-                                <a href="https://github.com/Abhijeet-077/Crop-Yield-Prredicition" class="btn btn-purple">Github</a>
+                                <a href="https://github.com/Abhijeet-077/Crop-Yield-Prediction" target="_blank" class="btn btn-purple">Github <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
                             </div>
                         </div>
                     </div>
@@ -1230,7 +1334,7 @@
                                 <span class="tech-badge purple-badge">GPS</span>
                             </div>
                             <div class="flex justify-between">
-                                <a href="https://github.com/Abhijeet-077/R.U.N-Rescue-us-Now-" class="btn btn-purple">Github</a>
+                                <a href="https://github.com/Abhijeet-077/R.U.N-Rescue-us-Now-" target="_blank" class="btn btn-purple">Github <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
                             </div>
                         </div>
                     </div>
@@ -1303,7 +1407,7 @@
                                 <span class="tech-badge green-badge">Python</span>
                                 <span class="tech-badge green-badge">Seaborn</span>
                             </div>
-                            <a href="https://github.com/Abhijeet-077/Heart-Disease-Prediciton" class="btn btn-green text-sm">GITHUB</a>
+                            <a href="https://github.com/Abhijeet-077/Heart-Disease-Prediction" target="_blank" class="btn btn-green text-sm">GITHUB <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
                         </div>
                     </div>
                 </div>
@@ -1316,7 +1420,7 @@
     <!-- Contact Section -->
     <section id="contact" class="section reveal">
         <div class="container mx-auto px-6">
-            <h2 class="orbitron text-3xl font-bold section-heading neon-text-purple">Get In Touch</h2>
+            <h2 class="orbitron text-3xl font-bold section-heading neon-text-purple">Get In Touch<span class="heading-underline"></span></h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
                     <p class="text-gray-300 mb-6">I'm always interested in new opportunities, challenging projects and connecting with fellow professionals in the AI and Machine Learning space. Feel free to reach out if you want to discuss potential collaborations or just have a chat about the latest in technology.</p>
@@ -1344,7 +1448,7 @@
                             <a href="https://www.linkedin.com/in/abhijeetswami" target="_blank" class="social-icon social-icon-purple mr-3">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
-                            <a href="https://github.com/Abhijeet-077" target="_blank" class="social-icon social-icon-purple mr-3">
+                            <a href="https://github.com/Abhijeet-077" target="_blank" class="social-icon social-icon-purple mr-3" title="GitHub Profile">
                                 <i class="fab fa-github"></i>
                             </a>
                             <a href="https://leetcode.com/u/As_abhijeet/" target="_blank" class="social-icon social-icon-purple mr-3">
